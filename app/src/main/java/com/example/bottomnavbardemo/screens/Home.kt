@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -26,14 +27,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.bottomnavbardemo.ARGKEY
 import com.example.bottomnavbardemo.R
+import com.example.bottomnavbardemo.viewmodels.TodoViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, vm: TodoViewModel) {
+
+    //val studentsList = viewModel.list.observeAsState().value
 
     data class OnSellItems(var name: String, var description: String, var price: Double);
     var computer = OnSellItems("Computer", "On good state", 200.4)
     var OnSellItemsList = listOf<OnSellItems>(computer)
+    LaunchedEffect(key1 = Unit, block = {
+        vm.getTodoList()
+    })
+    Log.d("todo list itmes", vm.todoList.size.toString())
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Color.LightGray)
@@ -59,14 +68,14 @@ fun HomeScreen(navController: NavHostController) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            OnSellItems()
+            OnSellItems(navController)
         }
 
     }
 }
 
 @Composable
-fun OnSellItems(){
+fun OnSellItems(navController: NavHostController){
     // lazy column goes here
     val list = listOf(
         "A", "B", "C", "D"
@@ -76,19 +85,19 @@ fun OnSellItems(){
             Log.d("COMPOSE", "This get rendered $item")
             when (item) {
                 "A" -> {
-                    CardDemo()
+                    CardDemo(navController)
                 }
                 "B" -> {
-                    CardDemo()
+                    CardDemo(navController)
                 }
                 "C" -> {
-                    CardDemo()
+                    CardDemo(navController)
                 }
                 "D" -> {
-                    CardDemo()
+                    CardDemo(navController)
                 }
                 else -> {
-                    CardDemo()
+                    CardDemo(navController)
                 }
             }
         })
@@ -116,12 +125,13 @@ fun userIcon(){
 }
 
 @Composable
-fun CardDemo() {
+fun CardDemo(navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp)
             .clickable {
+                navController.navigate(route = "detail-screen/" + 1)
             },
         elevation = 10.dp
     ) {
